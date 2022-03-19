@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useRef, useCallback } from "react";
 import Text from "components/Text";
 import Spinner from "components/Spinner";
 import CheckBox from "components/CheckBox";
@@ -8,10 +8,9 @@ import * as S from "./style";
 import { COUNTRIES } from "constant";
 import FavoriteUsersContext from "context/FavoriteUsersProvider";
 
-const UserList = ({ users, isLoading }) => {
+const UserList = ({ users, isLoading, incrementPageNumber }) => {
   const [hoveredUserId, setHoveredUserId] = useState();
   const [countriesToFilter, setCountriesToFilter] = useState([]);
-
   const favoriteUsersContext = useContext(FavoriteUsersContext);
 
   const handleMouseEnter = (index) => {
@@ -22,9 +21,9 @@ const UserList = ({ users, isLoading }) => {
     setHoveredUserId();
   };
 
-  const handleCheckBoxClicked = (countryCode, state) => {
+  const handleCheckBoxClicked = (countryCode, isChecked) => {
     setCountriesToFilter(
-      !state
+      !isChecked
         ? [...countriesToFilter, countryCode]
         : countriesToFilter.filter((country) => country !== countryCode)
     );
@@ -34,27 +33,35 @@ const UserList = ({ users, isLoading }) => {
     favoriteUsersContext.handleFavoriteUser(user);
   };
 
+  const handleScroll = (event) => {
+    const bottom =
+      event.target.scrollHeight - event.target.scrollTop === event.target.clientHeight;
+    if (bottom) {
+      incrementPageNumber?.();
+    }
+  };
+
   return (
     <S.UserList>
       <S.Filters>
         {Object.entries(COUNTRIES).map((country, index) => {
           const countryCode = country[1][0];
           const countryName = country[1][1];
-          const state = countriesToFilter.includes(countryCode);
+          const isChecked = countriesToFilter.includes(countryCode);
           return (
             <CheckBox
               key={index}
-              checked={state}
+              checked={isChecked}
               value={countryCode}
               label={countryName}
               onChange={() => {
-                handleCheckBoxClicked(countryCode, state);
+                handleCheckBoxClicked(countryCode, isChecked);
               }}
             />
           );
         })}
       </S.Filters>
-      <S.List>
+      <S.List onScroll={handleScroll}>
         {(countriesToFilter.length === 0
           ? users
           : users.filter((user) => countriesToFilter.includes(user.nat))

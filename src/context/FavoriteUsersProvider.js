@@ -1,7 +1,6 @@
 import { STORAGE_KEYS } from "constant";
 import { createContext, useState, useEffect } from "react";
 
-// createContext returns react component hence the capital naming
 const FavoriteUsersContext = createContext({
   favorites: [],
   handleFavoriteUser: () => {},

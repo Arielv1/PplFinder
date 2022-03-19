@@ -2,10 +2,11 @@ import React from "react";
 import Text from "components/Text";
 import UserList from "components/UserList";
 import { usePeopleFetch } from "hooks";
+import { useRef, useCallback } from "react";
 import * as S from "./style";
 
 const Home = () => {
-  const { users, isLoading } = usePeopleFetch();
+  const { users, isLoading, incrementPageNumber } = usePeopleFetch();
 
   return (
     <S.Home>
@@ -15,7 +16,11 @@ const Home = () => {
             PplFinder
           </Text>
         </S.Header>
-        <UserList users={users} isLoading={isLoading} />
+        <UserList
+          users={users}
+          isLoading={isLoading}
+          incrementPageNumber={incrementPageNumber}
+        />
       </S.Content>
     </S.Home>
   );

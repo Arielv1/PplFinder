@@ -1,25 +1,31 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import AppBar from "@material-ui/core/AppBar";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
-import Home from "../../pages/Home/index";
-import Favorites from "../../pages/Favorites/index";
-import { Link } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 const NavBar = () => {
   const [value, setValue] = useState(0);
+  const prevValue = useRef(0);
+  const history = useHistory();
 
   const handleChange = (_e, newValue) => {
+    if (newValue === value) return;
     setValue(newValue);
   };
 
-  const renderPage = (pageValue) => {
-    switch (pageValue) {
+  useEffect(() => {
+    if (prevValue.current === value) return;
+    switch (value) {
       case 0:
-        return <Home />;
+        history.push("/");
+        break;
       case 1:
-        return <Favorites />;
+        history.push("/Favorites");
+        break;
     }
-  };
+    prevValue.current = value;
+  }, [value]);
+
   return (
     <>
       <AppBar position="static" color="transparent" style={{ position: "fixed", top: 0 }}>
@@ -34,7 +40,6 @@ const NavBar = () => {
           <Tab label="Favorites" index={1} />
         </Tabs>
       </AppBar>
-      {!!value && renderPage(value)}
     </>
   );
 };
