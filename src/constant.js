@@ -18,3 +18,15 @@ export const COLORS = {
   primary: "primary",
   secondary: "secondary",
 };
+
+export const COUNTRIES = [
+  ["BR", "Brazil"],
+  ["AU", "Australia"],
+  ["CA", "Canada"],
+  ["DE", "Germany"],
+  ["FR", "France"],
+];
+
+export const STORAGE_KEYS = {
+  favoriteUsers: "favoriteUsers",
+};

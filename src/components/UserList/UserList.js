@@ -1,13 +1,18 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useContext } from "react";
 import Text from "components/Text";
 import Spinner from "components/Spinner";
 import CheckBox from "components/CheckBox";
 import IconButton from "@material-ui/core/IconButton";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import * as S from "./style";
+import { COUNTRIES } from "constant";
+import FavoriteUsersContext from "context/FavoriteUsersProvider";
 
 const UserList = ({ users, isLoading }) => {
   const [hoveredUserId, setHoveredUserId] = useState();
+  const [countriesToFilter, setCountriesToFilter] = useState([]);
+
+  const favoriteUsersContext = useContext(FavoriteUsersContext);
 
   const handleMouseEnter = (index) => {
     setHoveredUserId(index);
@@ -17,16 +22,43 @@ const UserList = ({ users, isLoading }) => {
     setHoveredUserId();
   };
 
+  const handleCheckBoxClicked = (countryCode, state) => {
+    setCountriesToFilter(
+      !state
+        ? [...countriesToFilter, countryCode]
+        : countriesToFilter.filter((country) => country !== countryCode)
+    );
+  };
+
+  const handleFavoriteClicked = (user) => {
+    favoriteUsersContext.handleFavoriteUser(user);
+  };
+
   return (
     <S.UserList>
       <S.Filters>
-        <CheckBox value="BR" label="Brazil" />
-        <CheckBox value="AU" label="Australia" />
-        <CheckBox value="CA" label="Canada" />
-        <CheckBox value="DE" label="Germany" />
+        {Object.entries(COUNTRIES).map((country, index) => {
+          const countryCode = country[1][0];
+          const countryName = country[1][1];
+          const state = countriesToFilter.includes(countryCode);
+          return (
+            <CheckBox
+              key={index}
+              checked={state}
+              value={countryCode}
+              label={countryName}
+              onChange={() => {
+                handleCheckBoxClicked(countryCode, state);
+              }}
+            />
+          );
+        })}
       </S.Filters>
       <S.List>
-        {users.map((user, index) => {
+        {(countriesToFilter.length === 0
+          ? users
+          : users.filter((user) => countriesToFilter.includes(user.nat))
+        ).map((user, index) => {
           return (
             <S.User
               key={index}
@@ -46,7 +78,12 @@ const UserList = ({ users, isLoading }) => {
                   {user?.location.city} {user?.location.country}
                 </Text>
               </S.UserInfo>
-              <S.IconButtonWrapper isVisible={index === hoveredUserId}>
+              <S.IconButtonWrapper
+                isVisible={
+                  index === hoveredUserId || favoriteUsersContext.favorites.includes(user)
+                }
+                onClick={() => handleFavoriteClicked(user)}
+              >
                 <IconButton>
                   <FavoriteIcon color="error" />
                 </IconButton>
