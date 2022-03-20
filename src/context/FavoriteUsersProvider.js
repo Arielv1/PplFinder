@@ -12,6 +12,7 @@ export const FavoritesContextProvider = ({ children }) => {
     return data ? data : [];
   });
 
+  /* update storage on favorite user added or removed */
   useEffect(() => {
     localStorage.setItem(STORAGE_KEYS.favoriteUsers, JSON.stringify(favoriteUsers));
   }, [favoriteUsers]);

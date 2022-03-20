@@ -13,6 +13,7 @@ const UserList = ({ users, isLoading, incrementPageNumber }) => {
   const [countriesToFilter, setCountriesToFilter] = useState([]);
   const favoriteUsersContext = useContext(FavoriteUsersContext);
 
+  /* user events */
   const handleMouseEnter = (index) => {
     setHoveredUserId(index);
   };
@@ -29,10 +30,12 @@ const UserList = ({ users, isLoading, incrementPageNumber }) => {
     );
   };
 
+  /* update fav list via context */
   const handleFavoriteClicked = (user) => {
     favoriteUsersContext.handleFavoriteUser(user);
   };
 
+  /* scroll event of rendered elem */
   const handleScroll = (event) => {
     const bottom =
       event.target.scrollHeight - event.target.scrollTop === event.target.clientHeight;

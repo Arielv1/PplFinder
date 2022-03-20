@@ -9,6 +9,8 @@ import { usePeopleFetch } from "hooks";
 const Favorites = () => {
   const { isLoading } = usePeopleFetch();
   const favoriteUsersContext = useContext(FavoriteUsersContext);
+
+  /* render the same way as Home component, pass fav users instead of all users */
   return (
     <S.Favorites>
       <S.Content>

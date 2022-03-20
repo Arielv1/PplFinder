@@ -20,7 +20,6 @@ export const usePeopleFetch = () => {
   }
 
   const incrementPageNumber = () => {
-    console.log("incrementing");
     setUsersPageNum(usersPageNum + 1);
   };
 
